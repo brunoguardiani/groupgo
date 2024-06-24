@@ -9,6 +9,8 @@ import { routes } from './routes/app.routes';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
+import { EventModule } from './modules/event/event.module';
+import { IngredientModule } from './modules/ingredient/ingredient.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { AuthModule } from './modules/auth/auth.module';
     RouterModule.register(routes),
     UserModule,
     AuthModule,
+    IngredientModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
