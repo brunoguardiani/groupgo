@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginUtils } from 'src/utils/login_utils';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
@@ -10,6 +10,9 @@ export class AuthService {
     
     async signIn(email, password) {
         const user = await this.userService.findOneBy(email);
+        if (!user){
+            throw new NotFoundException()
+        }
         const login_utils = new LoginUtils()
         if (!login_utils.validatePassword(password, user)){
             throw new UnauthorizedException()
