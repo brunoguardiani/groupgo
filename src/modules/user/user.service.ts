@@ -46,7 +46,6 @@ export class UserService {
     async findOneBy (key: any) {
         const options: FindOneOptions<User> = {
             where: [
-              { id: key },
               { username: key },
               { email: key },
             ],
