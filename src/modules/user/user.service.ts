@@ -21,10 +21,10 @@ export class UserService {
         const { password, username, email} = createUserDto;
         const hashedPassword = await this.hashPassword(password);
         const userAlreadyExists = await this.userRepository.findOne({
-            where:{
-                username: username,
-                email: email
-            }
+            where:[
+                {username: username},
+                {email: email}
+            ]
         })
         if (userAlreadyExists) {
             throw new UserAlreadExists()
