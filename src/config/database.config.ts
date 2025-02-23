@@ -9,6 +9,9 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'postgres',
+  ssl: {
+    rejectUnauthorized: false
+  },
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
 };
