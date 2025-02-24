@@ -10,8 +10,8 @@ export class AuthController {
 
     @Public()
     @Post('login')
-    signIn(@Body() signInDto: LoginDto) {
-        return this.authService.signIn(signInDto.login, signInDto.password);
+    signIn(@Body() loginDto: LoginDto) {
+        return this.authService.signIn(loginDto);
     }
 
 }

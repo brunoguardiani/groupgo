@@ -1,15 +1,20 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginUtils } from 'src/utils/login_utils';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
+import LoginDto from './dto/auth_login.dto';
 
 @Injectable()
 export class AuthService {
     constructor (private userService: UserService, private jwtService: JwtService) {}
     
-    async signIn(email, password) {
-        const user = await this.userService.findOneBy(email);
+    async signIn(loginDto: LoginDto) {
+        const { login, password } = loginDto;
+        if (!login) {
+            throw new BadRequestException('Login wasnt informed.');
+        }        
+        const user = await this.userService.findOneBy(login);
         if (!user){
             throw new NotFoundException()
         }
