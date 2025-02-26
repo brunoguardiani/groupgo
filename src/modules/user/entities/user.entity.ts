@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { UUID } from 'crypto';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BeforeInsert } from 'typeorm';
+import { IsEmail } from "class-validator";
 
 @Entity()
 export class User {
@@ -11,9 +12,23 @@ export class User {
   username: string;
 
   @Column()
+  name: string;
+
+  @Column({ nullable: true })  // Initially nullable for migration purposes
+  nickname: string;
+
+  @BeforeInsert()
+  setNickname() {
+      if (!this.nickname) {
+          this.nickname = '@'+this.name;
+      }
+  }
+
+  @Column({nullable:false})
+  @IsEmail()
   email: string;
 
-  @Column()
+  @Column({nullable:false})
   password: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
