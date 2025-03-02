@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { UUID } from 'crypto';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BeforeInsert, OneToMany, ManyToMany } from 'typeorm';
 import { IsEmail } from "class-validator";
+import { Event } from 'src/modules/event/entities/event.entity';
 
 @Entity()
 export class User {
@@ -33,4 +34,10 @@ export class User {
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
+
+  @ManyToMany(() => Event, (event) => event.guests)
+  events: [];
+
+  @OneToMany(() => Event, (event) => event.admin)
+  managed_events: Event[];
 }

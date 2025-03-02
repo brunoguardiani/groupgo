@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { IngredientModule } from './modules/ingredient/ingredient.module';
+import { EventModule } from './modules/event/event.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { IngredientModule } from './modules/ingredient/ingredient.module';
     UserModule,
     AuthModule,
     IngredientModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
