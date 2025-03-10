@@ -11,7 +11,6 @@ export class EventController {
     @UseGuards(AuthGuard)
     @Post()
     create(@Request() req, @Body() createEventDto: CreateEventDto){
-        console.log('@@@@@@@@@@@@@@@@',req.user)
         return this.eventService.create(createEventDto, req.user)
     }
 
