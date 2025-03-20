@@ -36,6 +36,9 @@ export class UserService {
           id: savedUser.id,
           username: savedUser.username,
           email: savedUser.email,
+          name: savedUser.name,
+          nickname: savedUser.nickname,
+          created_at: savedUser.created_at
         };
     }
 
@@ -51,5 +54,18 @@ export class UserService {
             ],
           };
         return this.userRepository.findOne(options)
+    }
+
+    async getOwnUser(user: any) {
+        const user_id = user.sub
+        const own_user = await this.userRepository.findOne({ where: { id: user_id } })
+        return {
+            id: own_user.id,
+            username: own_user.username,
+            email: own_user.email,
+            name: own_user.name,
+            nickname: own_user.nickname,
+            created_at: own_user.created_at
+        }
     }
 }

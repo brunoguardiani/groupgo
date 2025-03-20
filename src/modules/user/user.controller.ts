@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import CreateUserDto from './dto/create_user.dto';
 import { Public } from '../auth/public-strategy';
@@ -13,5 +13,10 @@ export class UserController {
     @Public()
     create(@Body() createUserDto: CreateUserDto): Promise<ReturnUserDto>{
         return this.userService.create(createUserDto)
+    }
+
+    @Get('profile')
+    list(@Request() req): Promise<ReturnUserDto>{
+        return this.userService.getOwnUser(req.user)
     }
 }
