@@ -19,7 +19,8 @@ export class AuthService {
             throw new NotFoundException()
         }
         const login_utils = new LoginUtils()
-        if (!login_utils.validatePassword(password, user)){
+        const validated_password = await login_utils.validatePassword(password, user)
+        if (!validated_password){
             throw new UnauthorizedException()
         }
         const payload = { sub: user.id, email: user.email};
