@@ -19,7 +19,7 @@ export class EventService {
     
     async create(createEventDto: CreateEventDto, user: any): Promise<any> {
         const { name, guests } = createEventDto
-        const found_guests = await this.userRepository.findBy({ id: In(guests) })
+        const found_guests = await this.userRepository.findBy({ email: In(guests) })
         if (found_guests.length != guests.length) {
             throw new BadRequestException('Some users does not exist.')
         }
