@@ -21,7 +21,7 @@ export class User {
   @BeforeInsert()
   setNickname() {
       if (!this.nickname) {
-          this.nickname = '@'+this.name;
+          this.nickname = '@'+this.username.toLowerCase();
       }
   }
 

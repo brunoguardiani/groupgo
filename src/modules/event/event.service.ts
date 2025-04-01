@@ -5,9 +5,12 @@ import { Event } from './entities/event.entity';
 import { Repository, In } from 'typeorm';
 import CreateEventDto from './dto/createEventDto.dto';
 import { User } from '../user/entities/user.entity';
+import { MailService } from '../mail/mail.service';
+import { Resend } from 'resend';
 
 @Injectable()
 export class EventService {
+    private readonly resend: Resend;
     
     constructor(
         @InjectRepository(Event)
@@ -15,6 +18,8 @@ export class EventService {
 
         @InjectRepository(User)
         private userRepository: Repository<User>,
+
+        private readonly mailService: MailService
     ){}   
     
     async create(createEventDto: CreateEventDto, user: any): Promise<any> {
@@ -23,6 +28,12 @@ export class EventService {
         if (found_guests.length != guests.length) {
             throw new BadRequestException('Some users does not exist.')
         }
+        const emails = found_guests.map(guest => guest.email)
+        await this.mailService.sendEmail(
+            emails,
+            'Hello from GroupGo!',
+            '<p>What up! Come and join us!</p>',
+          );
         const current_user = await this.userRepository.findOne({ where: { id: user.sub } })
         const event = this.eventRepository.create(
             { 
