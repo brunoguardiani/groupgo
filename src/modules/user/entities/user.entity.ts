@@ -3,6 +3,7 @@ import { UUID } from 'crypto';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BeforeInsert, OneToMany, ManyToMany } from 'typeorm';
 import { IsEmail } from "class-validator";
 import { Event } from 'src/modules/event/entities/event.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -29,6 +30,7 @@ export class User {
   @IsEmail()
   email: string;
 
+  @Exclude()
   @Column({nullable:false})
   password: string;
 
