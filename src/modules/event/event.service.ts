@@ -52,25 +52,41 @@ export class EventService {
     async listEvents(name: string, user: any) {
         const e_guests_query = this.eventRepository
                 .createQueryBuilder('event')
-                .leftJoinAndSelect('event.guests', 'guest')
+                .leftJoin('event.guests', 'guest')
+                .where('guest.id = :userId', { userId: user.sub })
 
         const e_admin_query = this.eventRepository
                 .createQueryBuilder('event')
-                .leftJoinAndSelect('event.admin', 'admin')
+                .leftJoin('event.admin', 'admin')
+                .where('admin.id = :userId', { userId: user.sub })
 
         if (name){
             e_guests_query.andWhere('event.name = :name', { name })
             e_admin_query.andWhere('event.name = :name', { name })
         }
 
-        e_guests_query.andWhere('guest.id = :userId', { userId: user.sub })
-
-        e_admin_query.andWhere('admin.id = :userId', { userId: user.sub })
-
-        const [ guestEvents, managedEvents ] = await Promise.all([
-            e_guests_query.getMany(),
-            e_admin_query.getMany()
+        let [ guestEvents, managedEvents ] = await Promise.all([
+            e_guests_query.select(['event.id']).getMany(),
+            e_admin_query.select(['event.id']).getMany()
         ])
-        return { managedEvents, guestEvents }
+
+        const guestEventIds = guestEvents.map(e => e.id);
+        const managedEventIds = managedEvents.map(e => e.id);
+        const allIds = Array.from(new Set([...guestEventIds, ...managedEventIds]));
+
+        if (allIds.length === 0) {
+            return { guestEvents: [], managedEvents: [] };
+          }
+
+        const allEvents = await this.eventRepository.find({
+            where: { id: In(allIds) },
+            relations: ['guests', 'admin'],
+            order: { created_at: 'DESC' }
+          });
+        
+        guestEvents = allEvents.filter(e => e.guests.some(g => g.id === user.sub));
+        managedEvents = allEvents.filter(e => e.admin?.id === user.sub);
+    
+        return { guestEvents, managedEvents };
     }
 }
